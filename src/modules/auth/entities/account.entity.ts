@@ -7,7 +7,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Admin } from '../../admin/entities/admin.entity';
 import { Student } from '../../students/entities/student.entity';
+import { Tutors } from '../../tutors/entities/tutor.entity';
 
 export const TableName = 'accounts';
 @Entity(TableName)
@@ -26,6 +28,9 @@ export class Account {
   @Exclude()
   passwordResetToken: string;
 
+  @Column()
+  role: number;
+
   @Column({ default: true })
   isActive: boolean;
 
@@ -34,6 +39,12 @@ export class Account {
 
   @OneToOne(() => Student, (student) => student.account)
   student: Student;
+
+  @OneToOne(() => Admin, (admin) => admin.account)
+  admin: Admin;
+
+  @OneToOne(() => Tutors, (tutors) => tutors.account)
+  tutors: Tutors;
 
   @CreateDateColumn()
   @Exclude()
