@@ -10,7 +10,7 @@ down:
 
 # MIGRATION
 migrationGen:
-	npx typeorm migration:generate -n migration_20_07 $(n)
+	npx typeorm migration:generate -n=$(n)
 migrate:
 	npx typeorm migration:run
 

@@ -10,9 +10,9 @@ import {
 } from 'typeorm';
 import { Account } from '../../accounts/entities/account.entity';
 
-export const TableName = 'students';
+export const TableName = 'admin';
 @Entity(TableName)
-export class Student {
+export class Admin {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -34,7 +34,7 @@ export class Student {
   @Column({ nullable: true })
   avatarUrl: string;
 
-  @OneToOne(() => Account, (account) => account.student)
+  @OneToOne(() => Account, (account) => account.admin)
   @JoinColumn()
   account: Account;
 
@@ -46,7 +46,7 @@ export class Student {
   @Exclude()
   updatedAt: Date;
 
-  constructor(partial: Partial<Student>) {
+  constructor(partial: Partial<Admin>) {
     Object.assign(this, partial);
   }
 }
