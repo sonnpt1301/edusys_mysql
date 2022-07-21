@@ -1,21 +1,23 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { Connection, Repository } from 'typeorm';
+import { Connection, EntityTarget, Repository } from 'typeorm';
 import { Role } from '../../shared/constants/common.constant';
 import { getRandomString } from '../../utils/random-string';
 import { Admin } from '../admin/entities/admin.entity';
 import { Student } from '../students/entities/student.entity';
 import { Tutors } from '../tutors/entities/tutor.entity';
-import { CreateAccountDto } from './dto/accounts.req.dto';
+import { CreateAccountDto, LoginDto } from './dto/auth.req.dto';
 import { Account } from './entities/account.entity';
-import { IAccount } from './interface/accounts.interface';
+import { IAccount } from './interface/auth.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class AccountsService {
+export class AuthService {
   constructor(
     private readonly connection: Connection,
     @InjectRepository(Account) private accountRepo: Repository<Account>,
+    private jwtService: JwtService,
   ) {}
 
   async fineOne(id: string): Promise<Account> {
@@ -49,7 +51,7 @@ export class AccountsService {
         passwordResetToken: getRandomString(10),
       };
       const account = await queryRunner.manager.save(Account, accountData);
-      let entityName;
+      let entityName: EntityTarget<Student | Tutors | Admin>;
       if (role === Role.STUDENT) entityName = Student;
       if (role === Role.TUTORS) entityName = Tutors;
       if (role === Role.ADMIN) entityName = Admin;
@@ -62,5 +64,25 @@ export class AccountsService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async login(body: LoginDto) {
+    const { email, password } = body;
+
+    const account = await this.accountRepo.findOne({ where: { email } });
+    if (!account) {
+      throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
+    }
+
+    const { password: hashPassword, role } = account;
+    const comparedPassword = await bcrypt.compare(password, hashPassword);
+    if (!comparedPassword) {
+      throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
+    }
+
+    const payload = { email, role };
+    return {
+      accessToken: this.jwtService.sign(payload),
+    };
   }
 }

@@ -10,3 +10,7 @@ export enum Role {
   TUTORS,
   STUDENT,
 }
+
+export const jwtConstants = {
+  secret: 'secretKey',
+};

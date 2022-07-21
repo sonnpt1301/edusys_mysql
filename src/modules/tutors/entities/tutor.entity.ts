@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Account } from '../../accounts/entities/account.entity';
+import { Account } from '../../auth/entities/account.entity';
 
 export const TableName = 'tutors';
 @Entity(TableName)
