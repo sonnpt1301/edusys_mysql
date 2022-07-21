@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AccountsModule } from '../modules/accounts/accounts.module';
+import { AuthModule } from '../modules/auth/auth.module';
 import { StudentsModule } from '../modules/students/students.module';
 import { PaginationModule } from '../shared/pagination/pagination.module';
 import { AppController } from './app.controller';
@@ -9,7 +9,7 @@ import { AppService } from './app.service';
 @Module({
   imports: [
     StudentsModule,
-    AccountsModule,
+    AuthModule,
     TypeOrmModule.forRoot(),
     PaginationModule,
   ],

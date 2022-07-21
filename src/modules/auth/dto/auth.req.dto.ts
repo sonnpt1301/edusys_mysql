@@ -20,3 +20,16 @@ export class CreateAccountDto {
   @IsEnum(Role)
   role: Role;
 }
+
+export class LoginDto {
+  @ApiProperty({ default: 'jokerboy1412@gmail.com' })
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({ default: '123456' })
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+}
