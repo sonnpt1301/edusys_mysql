@@ -23,7 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const message =
       status !== HttpStatus.INTERNAL_SERVER_ERROR
-        ? JSON.stringify(exception.getResponse()) || null
+        ? exception.getResponse() || null
         : 'INTERNAL_SERVER_ERROR';
 
     // const status =
