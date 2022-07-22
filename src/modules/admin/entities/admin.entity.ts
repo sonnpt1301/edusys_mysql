@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Account } from '../../auth/entities/account.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 export const TableName = 'admin';
 @Entity(TableName)
@@ -35,8 +36,11 @@ export class Admin {
   avatarUrl: string;
 
   @OneToOne(() => Account, (account) => account.admin)
-  @JoinColumn()
+  @JoinColumn({ name: 'accountId' })
   account: Account;
+
+  @OneToOne(() => Category, (categories) => categories.createdBy)
+  categories: Category;
 
   @CreateDateColumn()
   @Exclude()

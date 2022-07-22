@@ -12,7 +12,7 @@ export class CategoriesService {
     private adminService: AdminService,
   ) {}
 
-  async createCategory(accId: number, body: CreateCategoryDto) {
+  async createCategory(body: CreateCategoryDto) {
     const { name } = body;
     const categoryExist = await this.categoriesRepo
       .createQueryBuilder('cat')
@@ -24,6 +24,8 @@ export class CategoriesService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // return this.categoriesRepo.save({ name, createdBy });
+
+    const createdBy = await this.adminService.getAdminInfo();
+    return this.categoriesRepo.save({ name, createdBy });
   }
 }

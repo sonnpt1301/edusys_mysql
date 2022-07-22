@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Account } from '../../auth/entities/account.entity';
+import { Admin } from '../../admin/entities/admin.entity';
 
 export const TableName = 'categories';
 @Entity(TableName)
@@ -19,9 +19,9 @@ export class Category {
   @Column()
   name: string;
 
-  @ManyToOne(() => Account, (account) => account.categories)
-  @JoinColumn()
-  createdBy: Account;
+  @ManyToOne(() => Admin, (admin) => admin.categories)
+  @JoinColumn({ name: 'createdBy' })
+  createdBy: Admin;
 
   @CreateDateColumn()
   @Exclude()

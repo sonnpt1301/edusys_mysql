@@ -35,7 +35,7 @@ export class Student {
   avatarUrl: string;
 
   @OneToOne(() => Account, (account) => account.student)
-  @JoinColumn()
+  @JoinColumn({ name: 'accountId' })
   account: Account;
 
   @CreateDateColumn()

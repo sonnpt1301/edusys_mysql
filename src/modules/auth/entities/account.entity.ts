@@ -47,9 +47,6 @@ export class Account {
   @OneToOne(() => Tutors, (tutors) => tutors.account)
   tutors: Tutors;
 
-  @OneToOne(() => Category, (categories) => categories.createdBy)
-  categories: Category;
-
   @CreateDateColumn()
   @Exclude()
   createdAt: Date;

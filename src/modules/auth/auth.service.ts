@@ -1,4 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Connection, EntityTarget, Repository } from 'typeorm';
@@ -7,25 +9,30 @@ import { getRandomString } from '../../utils/random-string';
 import { Admin } from '../admin/entities/admin.entity';
 import { Student } from '../students/entities/student.entity';
 import { Tutors } from '../tutors/entities/tutor.entity';
-import { CreateAccountDto, LoginDto, PayloadDto } from './dto/auth.req.dto';
+import { CreateAccountDto, LoginDto } from './dto/auth.req.dto';
 import { Account } from './entities/account.entity';
 import { IAccount } from './interface/auth.interface';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly connection: Connection,
     @InjectRepository(Account) private accountRepo: Repository<Account>,
+    @Inject(REQUEST) private readonly request: Request,
     private jwtService: JwtService,
   ) {}
 
-  async fineOne(
-    id: number,
-    options = {},
-    hasProfile = false,
-  ): Promise<Account> {
+  async fineOne(id: number, options = {}): Promise<Account> {
     return this.accountRepo.findOne(id, options);
+  }
+
+  async getAccountId() {
+    const req = this.request['user'];
+    if (!req) {
+      return null;
+    }
+
+    return req;
   }
 
   async findByEmail(email: string): Promise<Account> {
