@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { jwtConstants } from '../../shared/constants/common.constant';
+import { jwtConfig } from '../../configs/configs.constants';
 import { Student } from '../students/entities/student.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -12,8 +12,8 @@ import { JwtStrategy } from './guards/jwt-auth-guard';
   imports: [
     TypeOrmModule.forFeature([Account, Student]),
     JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      secret: jwtConfig.secret,
+      signOptions: { expiresIn: jwtConfig.expiresIn },
     }),
   ],
   controllers: [AuthController],
