@@ -33,3 +33,9 @@ export class LoginDto {
   @IsString()
   password: string;
 }
+
+export class PayloadDto {
+  email: string;
+  role: number;
+  accountId: number;
+}

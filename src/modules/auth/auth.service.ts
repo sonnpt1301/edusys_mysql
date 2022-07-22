@@ -7,7 +7,7 @@ import { getRandomString } from '../../utils/random-string';
 import { Admin } from '../admin/entities/admin.entity';
 import { Student } from '../students/entities/student.entity';
 import { Tutors } from '../tutors/entities/tutor.entity';
-import { CreateAccountDto, LoginDto } from './dto/auth.req.dto';
+import { CreateAccountDto, LoginDto, PayloadDto } from './dto/auth.req.dto';
 import { Account } from './entities/account.entity';
 import { IAccount } from './interface/auth.interface';
 import { JwtService } from '@nestjs/jwt';
@@ -74,13 +74,17 @@ export class AuthService {
       throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
     }
 
-    const { password: hashPassword, role } = account;
+    const { password: hashPassword, role, id: accountId } = account;
     const comparedPassword = await bcrypt.compare(password, hashPassword);
     if (!comparedPassword) {
       throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
     }
 
-    const payload = { email, role };
+    const payload = new PayloadDto();
+    payload.accountId = accountId;
+    payload.email = email;
+    payload.role = role;
+
     return {
       accessToken: this.jwtService.sign(payload),
     };

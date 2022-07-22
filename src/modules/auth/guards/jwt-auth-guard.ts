@@ -1,13 +1,15 @@
 import {
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { jwtConstants } from 'src/shared/constants/common.constant';
-import { IS_PUBLIC_KEY } from 'src/shared/decorators/public.decorator';
+import { IS_PUBLIC_KEY } from '../../../shared/decorators/public.decorator';
+import { PayloadDto } from '../dto/auth.req.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,10 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    console.log('payload', payload);
-
-    return { email: payload.email, role: payload.role };
+  async validate(payload: PayloadDto) {
+    return payload;
   }
 }
 
@@ -36,11 +36,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
-    console.log('isPublic', isPublic);
-    console.log('user', user);
 
     if (user) return user;
     if (isPublic) return true;
-    throw new UnauthorizedException();
+    throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
   }
 }

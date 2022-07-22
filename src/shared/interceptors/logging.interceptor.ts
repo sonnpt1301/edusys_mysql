@@ -31,19 +31,19 @@ const mappingMethodChalk = (method: string, originalUrl: string) => {
   }
 
   if (method === 'POST') {
-    return chalk.hex('#49cc90')(method);
+    return chalk.hex('#49cc90')(endpoint);
   }
 
   if (method === 'PUT') {
-    return chalk.hex('#fca130')(method);
+    return chalk.hex('#fca130')(endpoint);
   }
 
   if (method === 'PATCH') {
-    return chalk.hex('#50e3c2')(method);
+    return chalk.hex('#50e3c2')(endpoint);
   }
 
   if (method === 'DELETE') {
-    return chalk.hex('#f93e3e')(method);
+    return chalk.hex('#f93e3e')(endpoint);
   }
 };
 
