@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Admin } from '../../admin/entities/admin.entity';
+import { Category } from '../../categories/entities/category.entity';
 import { Student } from '../../students/entities/student.entity';
 import { Tutors } from '../../tutors/entities/tutor.entity';
 
@@ -45,6 +46,9 @@ export class Account {
 
   @OneToOne(() => Tutors, (tutors) => tutors.account)
   tutors: Tutors;
+
+  @OneToOne(() => Category, (categories) => categories.createdBy)
+  categories: Category;
 
   @CreateDateColumn()
   @Exclude()

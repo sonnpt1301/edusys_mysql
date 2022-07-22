@@ -20,8 +20,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async fineOne(id: string): Promise<Account> {
-    return this.accountRepo.findOne(id);
+  async fineOne(
+    id: number,
+    options = {},
+    hasProfile = false,
+  ): Promise<Account> {
+    return this.accountRepo.findOne(id, options);
   }
 
   async findByEmail(email: string): Promise<Account> {
@@ -80,10 +84,7 @@ export class AuthService {
       throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
     }
 
-    const payload = new PayloadDto();
-    payload.accountId = accountId;
-    payload.email = email;
-    payload.role = role;
+    const payload = { email, role, accountId };
 
     return {
       accessToken: this.jwtService.sign(payload),
