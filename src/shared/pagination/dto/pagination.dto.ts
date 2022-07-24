@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { DefaultPagination } from 'src/shared/constants/common.constant';
 import {
   IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { DefaultPagination } from '../../constants/common.constant';
 
 export class CommonPaginationDto {
   @ApiProperty({ required: false })

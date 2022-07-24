@@ -1,14 +1,10 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { Role } from '../../shared/constants/common.constant';
-import { Roles } from '../../shared/decorators/roles.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth-guard';
-import { RolesGuard } from '../auth/guards/role-guard';
+import { Auth } from '../../shared/decorators/auth.decorator';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/category.req.dto';
 
-@Roles(Role.ADMIN)
-@UseGuards(JwtAuthGuard)
-@UseGuards(RolesGuard)
+@Auth(Role.ADMIN)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}

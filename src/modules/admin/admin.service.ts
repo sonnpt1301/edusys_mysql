@@ -14,13 +14,13 @@ export class AdminService {
   ) {}
 
   async getAdminInfo() {
-    const { accountId, role } = await this.authService.getAccountId();
-    if (!accountId || role != Role.ADMIN) {
+    const account = await this.authService.getAccountId();
+    if (!account['accountId'] || account['role'] != Role.ADMIN) {
       return null;
     }
 
     return this.adminRepo.findOne({
-      where: { account: accountId },
+      where: { account: account['accountId'] },
     });
   }
 
