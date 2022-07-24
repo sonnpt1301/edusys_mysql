@@ -19,4 +19,5 @@ module.exports = {
     subscribersDir: 'src',
     migrationsDir: 'src/migrations',
   },
+  timezone: 'Z',
 };
