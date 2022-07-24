@@ -2,11 +2,11 @@ import './env';
 
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
 import { appConfig } from './configs/configs.constants';
 import { HttpExceptionFilter } from './shared/filter/http-exception.filter';
 import { SwaggerInitialize } from './shared/swaggers/document';
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
