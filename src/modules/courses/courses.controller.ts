@@ -4,6 +4,7 @@ import { Auth } from '../../shared/decorators/auth.decorator';
 import { CoursesService } from './courses.service';
 import {
   CreateCourseDto,
+  JoinCourseDto,
   UpdateCourseStatusQuery,
 } from './dto/courses.req.dto';
 
@@ -28,5 +29,14 @@ export class CoursesController {
     @Query() query: UpdateCourseStatusQuery,
   ) {
     return this.coursesService.updateCourseStatus(courseId, query);
+  }
+
+  @Auth(Role.STUDENT)
+  @Post('request-join-course/:courseId')
+  async requestJoinCourse(
+    @Param('courseId') courseId: number,
+    @Body() body: JoinCourseDto,
+  ) {
+    return this.coursesService.requestJoinCourse(courseId, body);
   }
 }

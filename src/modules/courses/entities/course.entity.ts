@@ -5,11 +5,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
 import { Tutors } from '../../tutors/entities/tutor.entity';
+import { UsersCourses } from './users-courses.entity';
 
 export const TableName = 'courses';
 @Entity(TableName)
@@ -48,6 +50,9 @@ export class Course {
   @ManyToOne(() => Category, (category) => category.courses)
   @JoinColumn({ name: 'categoryId' })
   category: Category;
+
+  @OneToMany(() => UsersCourses, (userCourse) => userCourse.course)
+  studentList: UsersCourses;
 
   @CreateDateColumn()
   @Exclude()

@@ -14,22 +14,28 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    console.log(exception);
-
+    console.log(exception.message);
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const msgErr = exception.getResponse()['message']
-      ? exception?.getResponse()['message']
-      : exception?.getResponse();
+    let msgErr: string;
+    switch (exception.name) {
+      case 'EntityColumnNotFound':
+        msgErr = exception.message;
+        break;
+
+      default:
+        msgErr = exception.getResponse()['message']
+          ? exception?.getResponse()['message']
+          : exception?.getResponse();
+    }
 
     const message =
       status !== HttpStatus.INTERNAL_SERVER_ERROR
         ? msgErr
         : 'INTERNAL_SERVER_ERROR';
-
     const errorResponse = {
       method: request.method,
       path: request.url,

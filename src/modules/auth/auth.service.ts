@@ -86,13 +86,13 @@ export class AuthService {
       throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
     }
 
-    const { password: hashPassword, role, id: accountId } = account;
+    const { password: hashPassword, role, id: accountId, isVerified } = account;
     const comparedPassword = await bcrypt.compare(password, hashPassword);
     if (!comparedPassword) {
       throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
     }
 
-    const payload = { email, role, accountId };
+    const payload = { email, role, accountId, isVerified };
 
     return {
       accessToken: this.jwtService.sign(payload),

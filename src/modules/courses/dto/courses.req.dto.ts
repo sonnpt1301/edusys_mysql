@@ -23,6 +23,11 @@ export class CreateCourseDto {
   reason: string;
 }
 
+export class JoinCourseDto {
+  @IsString()
+  secretKey: string;
+}
+
 export class UpdateCourseStatusQuery {
   @IsEnum(Status)
   @Type(() => Number)

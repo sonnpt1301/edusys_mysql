@@ -4,21 +4,27 @@ import { Repository } from 'typeorm';
 import { getRandomString } from '../../utils/random-string';
 import { AdminService } from '../admin/admin.service';
 import { CategoriesService } from '../categories/categories.service';
+import { StudentsService } from '../students/students.service';
 import { TutorsService } from '../tutors/tutors.service';
 import {
   CreateCourseDto,
+  JoinCourseDto,
   UpdateCourseStatusQuery,
 } from './dto/courses.req.dto';
 import { Course } from './entities/course.entity';
-import { Status } from './enum/courses.enum';
+import { UsersCourses } from './entities/users-courses.entity';
+import { JoinCourseStatus, Status } from './enum/courses.enum';
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectRepository(Course) private coursesRepo: Repository<Course>,
+    @InjectRepository(UsersCourses)
+    private usersCoursesRepo: Repository<UsersCourses>,
     private adminService: AdminService,
     private tutorsService: TutorsService,
     private categoriesService: CategoriesService,
+    private studentService: StudentsService,
   ) {}
   async findOne(courseId: number): Promise<Course> {
     const course = await this.coursesRepo.findOne(courseId);
@@ -53,5 +59,31 @@ export class CoursesService {
       .update({ status })
       .where('id = :courseId', { courseId })
       .execute();
+  }
+
+  async requestJoinCourse(courseId: number, body: JoinCourseDto) {
+    const { secretKey } = body;
+    const [course, student] = await Promise.all([
+      this.findOne(courseId),
+      this.studentService.getStudentInfo(),
+    ]);
+    const isJoined = await this.usersCoursesRepo.findOne({
+      where: {
+        student: student.id,
+        course: course.id,
+      },
+    });
+    if (secretKey !== course.secretKey) {
+      throw new HttpException(`Wrong secret key`, HttpStatus.BAD_REQUEST);
+    }
+    if (isJoined) {
+      throw new HttpException('Already joined', HttpStatus.BAD_REQUEST);
+    }
+
+    await this.usersCoursesRepo.save({
+      student,
+      course,
+      status: JoinCourseStatus.PENDING,
+    });
   }
 }

@@ -24,7 +24,6 @@ export class StudentsService {
     ) {
       return null;
     }
-
     return this.studentRepo.findOne({
       where: { account: account['accountId'] },
     });

@@ -1,20 +1,22 @@
-import { JwtAuthGuard } from './../auth/guards/jwt-auth-guard';
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { StudentsService } from './students.service';
-import { Roles } from '../../shared/decorators/roles.decorator';
+import { Body, Controller, Put } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Role } from '../../shared/constants/common.constant';
-import { RolesGuard } from '../auth/guards/role-guard';
+import { Auth } from '../../shared/decorators/auth.decorator';
+import { User } from '../../shared/decorators/get-user.decorator';
+import { UpdateStudentInfoDto } from './dto/students.req.dto';
+import { StudentsService } from './students.service';
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
-@Roles(Role.ADMIN, Role.STUDENT)
-@UseGuards(RolesGuard)
+@Auth(Role.STUDENT)
 @ApiTags('Students')
 @Controller('students')
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
-  @Get()
-  async saveProfile() {}
+  @Put('update-profile')
+  async updateProfile(
+    @User() accId: number,
+    @Body() body: UpdateStudentInfoDto,
+  ) {
+    return this.studentsService.updateProfile(accId, body);
+  }
 }
