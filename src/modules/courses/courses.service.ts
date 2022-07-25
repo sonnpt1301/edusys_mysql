@@ -4,13 +4,13 @@ import { Repository } from 'typeorm';
 import { getRandomString } from '../../utils/random-string';
 import { AdminService } from '../admin/admin.service';
 import { CategoriesService } from '../categories/categories.service';
-import { Status } from '../categories/enum/courses.enum';
 import { TutorsService } from '../tutors/tutors.service';
 import {
   CreateCourseDto,
   UpdateCourseStatusQuery,
 } from './dto/courses.req.dto';
 import { Course } from './entities/course.entity';
+import { Status } from './enum/courses.enum';
 
 @Injectable()
 export class CoursesService {

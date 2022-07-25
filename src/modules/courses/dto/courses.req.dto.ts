@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsDateString, IsEnum, IsString, IsUrl } from 'class-validator';
-import { Status } from '../../categories/enum/courses.enum';
+import { JoinCourseStatus, Status } from '../enum/courses.enum';
 
 export class CreateCourseDto {
   @IsString()
@@ -27,4 +27,10 @@ export class UpdateCourseStatusQuery {
   @IsEnum(Status)
   @Type(() => Number)
   status: Status;
+}
+
+export class UpdateJoinCourseStatusQuery {
+  @IsEnum(JoinCourseStatus)
+  @Type(() => Number)
+  status: JoinCourseStatus;
 }

@@ -1,3 +1,3 @@
-import { CreateProfileDto } from '../../../shared/constants/common.dto';
+import { UpdateProfileDto } from '../../../shared/constants/common.dto';
 
-export class CreateAdminProfileDto extends CreateProfileDto {}
+export class CreateAdminProfileDto extends UpdateProfileDto {}

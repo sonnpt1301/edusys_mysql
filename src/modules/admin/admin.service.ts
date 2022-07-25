@@ -17,7 +17,11 @@ export class AdminService {
 
   async getAdminInfo() {
     const account = await this.authService.getAccountId();
-    if (!account['accountId'] || account['role'] != Role.ADMIN) {
+    if (
+      !account['accountId'] ||
+      account['role'] != Role.ADMIN ||
+      !account['isVerified']
+    ) {
       return null;
     }
 

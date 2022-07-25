@@ -4,7 +4,7 @@ import { Connection, Repository } from 'typeorm';
 import { Role } from '../../shared/constants/common.constant';
 import { Account } from '../auth/entities/account.entity';
 import { AuthService } from './../auth/auth.service';
-import { CreateTutorsProfileDto } from './dto/tutors.req.dto';
+import { UpdateTutorsProfileDto } from './dto/tutors.req.dto';
 import { Tutors } from './entities/tutor.entity';
 @Injectable()
 export class TutorsService {
@@ -16,7 +16,11 @@ export class TutorsService {
 
   async getTutorsInfo() {
     const account = await this.authService.getAccountId();
-    if (!account['accountId'] || account['role'] != Role.TUTORS) {
+    if (
+      !account['accountId'] ||
+      account['role'] != Role.TUTORS ||
+      !account['isVerified']
+    ) {
       return null;
     }
 
@@ -25,7 +29,7 @@ export class TutorsService {
     });
   }
 
-  async updateProfile(accId: number, body: CreateTutorsProfileDto) {
+  async updateProfile(accId: number, body: UpdateTutorsProfileDto) {
     const account = await this.authService.fineOne(accId);
     const tutors = await this.tutorsRepo.findOne({
       where: { account: account.id },
