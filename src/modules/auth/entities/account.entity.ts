@@ -36,6 +36,9 @@ export class Account {
   isActive: boolean;
 
   @Column({ default: false })
+  isVerified: boolean;
+
+  @Column({ default: false })
   isDeleted: boolean;
 
   @OneToOne(() => Student, (student) => student.account)

@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { Role } from '../../shared/constants/common.constant';
+import { Account } from '../auth/entities/account.entity';
 import { AuthService } from './../auth/auth.service';
 import { CreateAdminProfileDto } from './dto/admin.req.dto';
 import { Admin } from './entities/admin.entity';
@@ -10,6 +11,7 @@ import { Admin } from './entities/admin.entity';
 export class AdminService {
   constructor(
     @InjectRepository(Admin) private adminRepo: Repository<Admin>,
+    private connection: Connection,
     private authService: AuthService,
   ) {}
 
@@ -26,15 +28,36 @@ export class AdminService {
 
   async updateProfile(accId: number, body: CreateAdminProfileDto) {
     const account = await this.authService.fineOne(accId);
-    if (!account) {
-      throw new HttpException('NOT FOUND', HttpStatus.NOT_FOUND);
+    const admin = await this.adminRepo.findOne({
+      where: { account: account.id },
+    });
+    if (!account || !admin) {
+      throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
     }
 
-    await this.adminRepo
-      .createQueryBuilder('admin')
-      .update(Admin)
-      .set(body)
-      .where('accountId = :accId', { accId })
-      .execute();
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const updatingProfile = queryRunner.manager.update(
+        Admin,
+        { id: admin.id },
+        body,
+      );
+      const updatingAccount = queryRunner.manager.update(
+        Account,
+        { id: account.id },
+        {
+          isVerified: true,
+        },
+      );
+      await Promise.all([updatingProfile, updatingAccount]);
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(`${error}`, HttpStatus.INTERNAL_SERVER_ERROR);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

@@ -8,19 +8,25 @@ import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth-guard';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { CoursesModule } from './modules/courses/courses.module';
 import { StudentsModule } from './modules/students/students.module';
+import { TutorsModule } from './modules/tutors/tutors.module';
 import { PaginationModule } from './shared/pagination/pagination.module';
-import { FlcModule } from './modules/flc/flc.module';
-
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 @Module({
   imports: [
+    TypeOrmModule.forRoot(),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
     StudentsModule,
     AuthModule,
-    TypeOrmModule.forRoot(),
     PaginationModule,
     AdminModule,
     CategoriesModule,
-    FlcModule,
+    CoursesModule,
+    TutorsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -28,6 +34,10 @@ import { FlcModule } from './modules/flc/flc.module';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

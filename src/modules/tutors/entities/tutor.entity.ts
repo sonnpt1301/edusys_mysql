@@ -4,11 +4,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Account } from '../../auth/entities/account.entity';
+import { Course } from '../../courses/entities/course.entity';
 
 export const TableName = 'tutors';
 @Entity(TableName)
@@ -37,6 +39,9 @@ export class Tutors {
   @OneToOne(() => Account, (account) => account.tutors)
   @JoinColumn()
   account: Account;
+
+  @OneToMany(() => Course, (courses) => courses.createdBy)
+  courses: Course;
 
   @CreateDateColumn()
   @Exclude()

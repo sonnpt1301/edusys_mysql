@@ -4,12 +4,14 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Account } from '../../auth/entities/account.entity';
 import { Category } from '../../categories/entities/category.entity';
+import { Course } from '../../courses/entities/course.entity';
 
 export const TableName = 'admin';
 @Entity(TableName)
