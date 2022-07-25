@@ -5,10 +5,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Admin } from '../../admin/entities/admin.entity';
+import { Course } from '../../courses/entities/course.entity';
 
 export const TableName = 'categories';
 @Entity(TableName)
@@ -22,6 +24,9 @@ export class Category {
   @ManyToOne(() => Admin, (admin) => admin.categories)
   @JoinColumn({ name: 'createdBy' })
   createdBy: Admin;
+
+  @OneToMany(() => Course, (course) => course.category)
+  courses: Course;
 
   @CreateDateColumn()
   @Exclude()

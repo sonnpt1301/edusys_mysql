@@ -13,9 +13,12 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Auth(Role.TUTORS)
-  @Post('create-course')
-  async createCourse(@Body() body: CreateCourseDto) {
-    return this.coursesService.createCourse(body);
+  @Post(':categoryId/create-course')
+  async createCourse(
+    @Param('categoryId') categoryId: number,
+    @Body() body: CreateCourseDto,
+  ) {
+    return this.coursesService.createCourse(categoryId, body);
   }
 
   @Auth(Role.ADMIN)

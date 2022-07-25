@@ -12,6 +12,15 @@ export class CategoriesService {
     private adminService: AdminService,
   ) {}
 
+  async fineOne(id: number) {
+    const category = await this.categoriesRepo.findOne(id);
+    if (!category) {
+      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+    }
+
+    return category;
+  }
+
   async createCategory(body: CreateCategoryDto) {
     const { name } = body;
     const categoryExist = await this.categoriesRepo

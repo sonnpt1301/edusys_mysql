@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { getRandomString } from '../../utils/random-string';
 import { AdminService } from '../admin/admin.service';
+import { CategoriesService } from '../categories/categories.service';
 import { Status } from '../categories/enum/courses.enum';
 import { TutorsService } from '../tutors/tutors.service';
 import {
@@ -17,6 +18,7 @@ export class CoursesService {
     @InjectRepository(Course) private coursesRepo: Repository<Course>,
     private adminService: AdminService,
     private tutorsService: TutorsService,
+    private categoriesService: CategoriesService,
   ) {}
   async findOne(courseId: number): Promise<Course> {
     const course = await this.coursesRepo.findOne(courseId);
@@ -27,10 +29,15 @@ export class CoursesService {
     return course;
   }
 
-  async createCourse(body: CreateCourseDto) {
-    const createdBy = await this.tutorsService.getTutorsInfo();
+  async createCourse(categoryId: number, body: CreateCourseDto) {
+    const [createdBy, category] = await Promise.all([
+      this.tutorsService.getTutorsInfo(),
+      this.categoriesService.fineOne(categoryId),
+    ]);
+
     return this.coursesRepo.save({
       ...body,
+      category,
       status: Status.PENDING,
       secretKey: getRandomString(5),
       createdBy,

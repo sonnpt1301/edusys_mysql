@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Category } from '../../categories/entities/category.entity';
 import { Tutors } from '../../tutors/entities/tutor.entity';
 
 export const TableName = 'courses';
@@ -43,6 +44,10 @@ export class Course {
   @ManyToOne(() => Tutors, (tutors) => tutors.courses)
   @JoinColumn({ name: 'createdBy' })
   createdBy: Tutors;
+
+  @ManyToOne(() => Category, (category) => category.courses)
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
 
   @CreateDateColumn()
   @Exclude()
