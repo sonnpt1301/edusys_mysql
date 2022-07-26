@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -13,6 +13,7 @@ import { StudentsModule } from './modules/students/students.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { PaginationModule } from './shared/pagination/pagination.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { CacheManagerModule } from './shared/cache-manager/cache-manager.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
@@ -27,6 +28,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     CategoriesModule,
     CoursesModule,
     TutorsModule,
+    CacheManagerModule,
   ],
   controllers: [AppController],
   providers: [
