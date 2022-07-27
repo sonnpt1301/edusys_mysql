@@ -21,7 +21,7 @@ export class UsersCourses {
   @JoinColumn({ name: 'courseId' })
   course: Course;
 
-  @ManyToOne(() => Student, (category) => category.joinedCourse)
+  @ManyToOne(() => Student, (course) => course.joinedCourse)
   @JoinColumn({ name: 'studentId' })
   student: Student;
 

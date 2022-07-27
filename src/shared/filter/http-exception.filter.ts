@@ -14,7 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    console.log(exception.message);
+    console.log(exception.name);
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
@@ -25,6 +25,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 'EntityColumnNotFound':
         msgErr = exception.message;
         break;
+      case 'TypeORMError':
+        msgErr = exception.message;
+        break;
+      case 'TypeError':
+        msgErr = exception.message;
+        break;
+      case 'QueryFailedError':
+        msgErr = exception.message;
+        break;
 
       default:
         msgErr = exception.getResponse()['message']
@@ -32,15 +41,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
           : exception?.getResponse();
     }
 
-    const message =
-      status !== HttpStatus.INTERNAL_SERVER_ERROR
-        ? msgErr
-        : 'INTERNAL_SERVER_ERROR';
+    // const message =
+    //   status !== HttpStatus.INTERNAL_SERVER_ERROR
+    //     ? msgErr
+    //     : 'INTERNAL_SERVER_ERROR';
+
     const errorResponse = {
       method: request.method,
       path: request.url,
       statusCode: status,
-      message: message,
+      message: msgErr,
       timestamp: moment().format(),
     };
 
