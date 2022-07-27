@@ -1,17 +1,32 @@
-import { Body, Controller, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { Role } from '../../shared/constants/common.constant';
 import { Auth } from '../../shared/decorators/auth.decorator';
 import { CoursesService } from './courses.service';
 import {
   CreateCourseDto,
+  GetListCourseQuery,
   JoinCourseDto,
   UpdateCourseStatusQuery,
+  UpdateJoinCourseDto,
 } from './dto/courses.req.dto';
 
 @Auth()
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
+
+  @Get('get-list-courses')
+  async getListCourses(@Query() query: GetListCourseQuery) {
+    return this.coursesService.getListCourses(query);
+  }
 
   @Auth(Role.TUTORS)
   @Post(':categoryId/create-course')
@@ -38,5 +53,14 @@ export class CoursesController {
     @Body() body: JoinCourseDto,
   ) {
     return this.coursesService.requestJoinCourse(courseId, body);
+  }
+
+  @Auth(Role.TUTORS)
+  @Patch('update-join-course-status/:courseId')
+  async updateJoinCourseStatus(
+    @Param('courseId') courseId: number,
+    @Body() body: UpdateJoinCourseDto,
+  ) {
+    return this.coursesService.updateJoinCourseStatus(courseId, body);
   }
 }

@@ -8,6 +8,7 @@ import { TutorsModule } from '../tutors/tutors.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { UsersCourses } from './entities/users-courses.entity';
 import { StudentsModule } from '../students/students.module';
+import { PaginationModule } from '../../shared/pagination/pagination.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { StudentsModule } from '../students/students.module';
     AdminModule,
     TutorsModule,
     CategoriesModule,
-    StudentsModule
+    StudentsModule,
+    PaginationModule,
   ],
   controllers: [CoursesController],
   providers: [CoursesService],

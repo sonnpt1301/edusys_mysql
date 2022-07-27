@@ -21,10 +21,12 @@ export class PaginationService {
 
     return {
       data: result,
-      currentPage: page + 1,
-      pageSize,
-      totalPage: Math.ceil(totalCount / pageSize),
-      totalCount,
+      pagination: {
+        currentPage: page + 1,
+        pageSize,
+        totalPage: Math.ceil(totalCount / pageSize),
+        totalCount,
+      },
     };
   }
 }
