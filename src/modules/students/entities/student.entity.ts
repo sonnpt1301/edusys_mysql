@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Account } from '../../auth/entities/account.entity';
+import { Blog } from '../../blogs/entities/blog.entity';
 import { UsersCourses } from '../../courses/entities/users-courses.entity';
 
 export const TableName = 'students';
@@ -40,8 +41,11 @@ export class Student {
   @JoinColumn({ name: 'accountId' })
   account: Account;
 
+  @OneToMany(() => Blog, (blog) => blog.createdBy)
+  blogs: Blog;
+
   @OneToMany(() => UsersCourses, (userCourse) => userCourse.student)
-  joinedCourse: UsersCourses;
+  joinedCourses: UsersCourses;
 
   @CreateDateColumn()
   @Exclude()

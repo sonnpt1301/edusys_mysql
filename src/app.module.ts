@@ -14,6 +14,7 @@ import { TutorsModule } from './modules/tutors/tutors.module';
 import { PaginationModule } from './shared/pagination/pagination.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CacheManagerModule } from './shared/cache-manager/cache-manager.module';
+import { BlogsModule } from './modules/blogs/blogs.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
@@ -29,6 +30,7 @@ import { CacheManagerModule } from './shared/cache-manager/cache-manager.module'
     CoursesModule,
     TutorsModule,
     CacheManagerModule,
+    BlogsModule,
   ],
   controllers: [AppController],
   providers: [

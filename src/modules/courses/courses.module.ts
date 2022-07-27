@@ -21,5 +21,6 @@ import { PaginationModule } from '../../shared/pagination/pagination.module';
   ],
   controllers: [CoursesController],
   providers: [CoursesService],
+  exports: [CoursesService],
 })
 export class CoursesModule {}

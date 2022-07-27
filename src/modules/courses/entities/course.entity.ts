@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Blog } from '../../blogs/entities/blog.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { Tutors } from '../../tutors/entities/tutor.entity';
 import { UsersCourses } from './users-courses.entity';
@@ -53,6 +54,9 @@ export class Course {
 
   @OneToMany(() => UsersCourses, (userCourse) => userCourse.course)
   studentList: UsersCourses;
+
+  @OneToMany(() => Blog, (blog) => blog.course)
+  blogs: Blog;
 
   @CreateDateColumn()
   @Exclude()
