@@ -3,14 +3,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Admin } from '../../admin/entities/admin.entity';
-import { Category } from '../../categories/entities/category.entity';
 import { Student } from '../../students/entities/student.entity';
 import { Tutors } from '../../tutors/entities/tutor.entity';
+import { ScheduleMeeting } from './../../schedule-meetings/entities/schedule-meeting.entity';
 
 export const TableName = 'accounts';
 @Entity(TableName)
@@ -49,6 +50,12 @@ export class Account {
 
   @OneToOne(() => Tutors, (tutors) => tutors.account)
   tutors: Tutors;
+
+  @ManyToMany(
+    () => ScheduleMeeting,
+    (scheduleMeeting) => scheduleMeeting.accounts,
+  )
+  scheduleMeetings: ScheduleMeeting[];
 
   @CreateDateColumn()
   @Exclude()

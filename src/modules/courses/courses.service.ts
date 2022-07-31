@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { PaginationService } from '../../shared/pagination/pagination.service';
 import { getRandomString } from '../../utils/random-string';
 import { AdminService } from '../admin/admin.service';
+import { Account } from '../auth/entities/account.entity';
 import { CategoriesService } from '../categories/categories.service';
 import { StudentsService } from '../students/students.service';
 import { TutorsService } from '../tutors/tutors.service';
@@ -30,13 +31,27 @@ export class CoursesService {
     private studentService: StudentsService,
     private readonly paginationService: PaginationService,
   ) {}
-  async findOne(courseId: number): Promise<Course> {
-    const course = await this.coursesRepo.findOne(courseId);
+  async findOne(
+    courseId: number,
+    options?: FindOneOptions<Course>,
+  ): Promise<Course> {
+    const course = await this.coursesRepo.findOne(courseId, options);
     if (!course) {
       throw new HttpException('Course not found', HttpStatus.NOT_FOUND);
     }
 
     return course;
+  }
+
+  async getStudentAccountsByCourseId(courseId: number): Promise<Account[]> {
+    const usersCourses = await this.usersCoursesRepo
+      .createQueryBuilder('users_courses')
+      .leftJoinAndSelect('users_courses.student', 'student')
+      .leftJoinAndSelect('student.account', 'account')
+      .where('courseId = :courseId', { courseId })
+      .getMany();
+
+    return usersCourses.map(({ student }) => student.account);
   }
 
   async getListCourses(query: GetListCourseQuery) {
@@ -107,7 +122,7 @@ export class CoursesService {
   async updateCourseStatus(courseId: number, query: UpdateCourseStatusQuery) {
     const { status } = query;
     await this.findOne(courseId);
-
+    // TODO: check createdBy with current user
     return this.coursesRepo
       .createQueryBuilder('course')
       .update({ status })
@@ -143,6 +158,7 @@ export class CoursesService {
 
   async updateJoinCourseStatus(courseId: number, body: UpdateJoinCourseDto) {
     const { status, studentIds } = body;
+    // TODO: check createdBy with current user
 
     const updatingStatus = studentIds.map(async (studentId) => {
       const userCourse = await this.usersCoursesRepo.findOne({
@@ -153,10 +169,9 @@ export class CoursesService {
         },
       });
       if (userCourse) {
-        userCourse.status = status;
         await this.usersCoursesRepo
           .createQueryBuilder()
-          .update(userCourse)
+          .update({ status })
           .execute();
       }
     });

@@ -1,20 +1,21 @@
-import { CacheModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth-guard';
+import { BlogsModule } from './modules/blogs/blogs.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { CoursesModule } from './modules/courses/courses.module';
+import { ScheduleMeetingsModule } from './modules/schedule-meetings/schedule-meetings.module';
 import { StudentsModule } from './modules/students/students.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
-import { PaginationModule } from './shared/pagination/pagination.module';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CacheManagerModule } from './shared/cache-manager/cache-manager.module';
-import { BlogsModule } from './modules/blogs/blogs.module';
+import { PaginationModule } from './shared/pagination/pagination.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
@@ -31,6 +32,7 @@ import { BlogsModule } from './modules/blogs/blogs.module';
     TutorsModule,
     CacheManagerModule,
     BlogsModule,
+    ScheduleMeetingsModule,
   ],
   controllers: [AppController],
   providers: [
