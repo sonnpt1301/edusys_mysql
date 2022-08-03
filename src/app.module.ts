@@ -16,6 +16,7 @@ import { StudentsModule } from './modules/students/students.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { CacheManagerModule } from './shared/cache-manager/cache-manager.module';
 import { PaginationModule } from './shared/pagination/pagination.module';
+import { RedisModule } from './shared/redis/redis.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
@@ -33,6 +34,7 @@ import { PaginationModule } from './shared/pagination/pagination.module';
     CacheManagerModule,
     BlogsModule,
     ScheduleMeetingsModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [

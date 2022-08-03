@@ -6,6 +6,7 @@ import { ScheduleMeetingsController } from './schedule-meetings.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoursesModule } from '../courses/courses.module';
 import { AuthModule } from '../auth/auth.module';
+import { RedisModule } from '../../shared/redis/redis.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AuthModule } from '../auth/auth.module';
     CoursesModule,
     AuthModule,
     PaginationModule,
+    RedisModule,
   ],
   controllers: [ScheduleMeetingsController],
   providers: [ScheduleMeetingsService],

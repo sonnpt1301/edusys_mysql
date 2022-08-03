@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { log } from 'console';
+import * as moment from 'moment';
 import { Brackets, Repository } from 'typeorm';
 import { PaginationService } from '../../shared/pagination/pagination.service';
+import { RedisService } from '../../shared/redis/redis.service';
 import { AuthService } from '../auth/auth.service';
 import { CoursesService } from '../courses/courses.service';
 import {
@@ -18,6 +21,7 @@ export class ScheduleMeetingsService {
     private readonly coursesService: CoursesService,
     private readonly authService: AuthService,
     private readonly paginationService: PaginationService,
+    private readonly redisService: RedisService,
   ) {}
 
   async getSchedules(query: GetSchedulesQuery) {
@@ -57,12 +61,26 @@ export class ScheduleMeetingsService {
     ]);
 
     const accounts = [tutorAccount, ...studentAccounts];
-    console.log(accounts);
-    await this.scheduleMeetingRepo.save({
+    const schedule = await this.scheduleMeetingRepo.save({
       accounts,
       addressLink: body.addressLink,
       location: body.location,
       scheduleAt: body.scheduleAt,
     });
+    const then = moment
+      .utc(schedule.scheduleAt)
+      .subtract(5, 'minutes')
+      .format('YYYY-MM-DD HH:mm:ss');
+    const now = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    const expired = moment(then).diff(moment(now), 'seconds');
+    console.log(now, then);
+    console.log(expired);
+
+    this.redisService.set(
+      'schedule-meeting',
+      `scheduleId_${schedule.id}`,
+      `${JSON.stringify(schedule)}`,
+      expired,
+    );
   }
 }

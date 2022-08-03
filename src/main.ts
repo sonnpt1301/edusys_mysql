@@ -1,4 +1,5 @@
 import './env';
+import './listener';
 
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -7,6 +8,7 @@ import { HttpExceptionFilter } from './shared/filter/http-exception.filter';
 import { SwaggerInitialize } from './shared/swaggers/document';
 import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import { AppModule } from './app.module';
+import RedisExpiredEvents from './shared/redis/redis-expired-event';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,7 +20,7 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.enableCors();
-
+  RedisExpiredEvents();
   const { port } = appConfig;
   await app.listen(port || 3000, () => {
     console.log(`Server is running on ${port}`);
