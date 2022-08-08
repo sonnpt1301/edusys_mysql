@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { log } from 'console';
+import ical, { ICalAlarmData } from 'ical-generator';
 import * as moment from 'moment';
 import { Brackets, Repository } from 'typeorm';
 import { PaginationService } from '../../shared/pagination/pagination.service';
@@ -80,7 +81,31 @@ export class ScheduleMeetingsService {
       'schedule-meeting',
       `scheduleId_${schedule.id}`,
       `${JSON.stringify(schedule)}`,
-      expired,
+      3,
     );
+  }
+
+  async downloadCalendarFile() {
+    const cal = ical({
+      prodId: '//superman-industries.com//ical-generator//EN',
+      events: [
+        {
+          start: moment().add('3', 'day'),
+          end: moment().add(3, 'day').add(1, 'hours'),
+          location: 'Google Meet',
+          summary: 'Example Event',
+          description: 'It works ;)',
+          url: 'https://example.com',
+          alarms: <ICalAlarmData[]>[
+            {
+              type: 'audio',
+              triggerBefore: 2,
+            },
+          ],
+        },
+      ],
+    });
+
+    return cal;
   }
 }

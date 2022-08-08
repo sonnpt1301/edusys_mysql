@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Response,
+} from '@nestjs/common';
 import {
   CreateScheduleMeetingDto,
   GetSchedulesQuery,
@@ -22,5 +30,16 @@ export class ScheduleMeetingsController {
     @Body() body: CreateScheduleMeetingDto,
   ) {
     return this.scheduleMeetingsService.createScheduleMeeting(courseId, body);
+  }
+
+  @Get('download/calendar')
+  async downloadCalendarFile(@Response({ passthrough: true }) res) {
+    const cal = await this.scheduleMeetingsService.downloadCalendarFile();
+    res.set({
+      'Content-Type': 'application/json',
+    });
+    // return res.send(cal.serve(res));
+    cal.serve(res);
+    res.end();
   }
 }
