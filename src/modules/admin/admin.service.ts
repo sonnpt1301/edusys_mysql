@@ -16,6 +16,7 @@ export class AdminService {
   ) {}
 
   async getAdminInfo() {
+    console.log('admin')
     const account = await this.authService.getAccountId();
     if (
       !account['accountId'] ||
